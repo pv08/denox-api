@@ -1,0 +1,97 @@
+Exercício Denox de Programação Python 
+
+Instruções
+
+- O projeto consiste em uma implementação de uma API REST usando o TORNADO (https://www.tornadoweb.org/en/stable/). A API terá dois endpoints com dois métodos distintos. Esta API, em um dos endpoints (POST) realizará uma consulta em um banco de dados MongoDB, fará um conjunto de cálculos e fará a persistencia. O outro endpoint (GET) realizará a leitura dos dados salvos. Os detalhes estão apresentados abaixo:
+
+	Os dados armazenados neste banco seguem o seguinte padrão:
+
+		Modelo de dados no MongoDB
+
+			{
+		    
+			    "serial" : "1308811990", 
+			    "ignicao" : false, 
+			    "situacao_movimento" : false, 
+			    "velocidade" : 0.0, 
+			    "latitude" : -22.8146596, 
+			    "longitude" : -43.3127033, 
+			    "orientacao" : 298.0, 
+			    "datahora": 1556240947
+
+			}
+
+
+		O Banco de dados a ser consultado é:  denox
+		A Collection a ser consultada é:  dados_rastreamento 	
+
+	Cálculos realizado pela API
+
+		Após realizar a busca no Mongo pelo Serial e pela Data e hora de inicio e fim, os dados retornados descrevem o deslocamento e as paradas de um determinado veículo durante o período. A API deverá realizar os seguintes cálculos: 
+
+			1o) Distancia Percorrida
+			2o) Tempo em movimento
+			3o) Tempo parado
+			4o) Centroides das posições paradas (Atenção: Vc deverá usar o método K-Means da biblioteca sklearn. Dica: O parametro n_clusters deverá ser igual a quantidade de paradas)
+
+		Após realizar os cálculos e montar o payload de saída (ver abaixo), você deve salvar os dados na collection "resultados_SEU_PRIMEIRO_NOME" dentro do mesmo banco de dados (banco denox mecionado acima). Onde está escrito _SEU_PRIMEIRO_NOME você deve colocar o seu primeiro nome, exemplo: resultados_antonio
+
+	- O Servidor irá prover dois Endpoints, são eles: 
+
+			- /api/calcula_metricas  # => Este endepoint é um POST
+			- /api/retorna_metricas  # => Este endepoint é um GET
+
+	- O Payload a ser enviado no POST deverá seguir o formato abaixo: 
+
+				{
+
+					"serial":"",
+					"datahora_inicio":"",
+					"datahora_fim":""
+
+				}
+
+				- O Serial é obrigatório, ou seja, deve-se passar uma serial (string númerica) valida.
+				- A datahora_inicio e datahora_fim são obrigatórios e, OBRIGATORIAMENTE serão sempre preenchidas no seguinte formato "dd/mm/aaaa HH:MM:SS". O Fuso horário das datahoras será SEMPRE America/Sao_Paulo. 
+
+	- O Payload de retorno do POST é dado abaixo:
+
+				- Se não houver erro
+					status: 200
+					response: {
+
+						"distancia_percorrida": 1234.1,
+						"tempo_em_movimento": 43211234, => ESTE TEMPO DEVE ESTAR EM SEGUNDOS! 
+						"tempo_parado": 987654321, => ESTE TEMPO DEVE ESTAR EM SEGUNDOS! 
+						"centroides_paradas":[[-19.985399, -43.948095],[-19.974550, -43.948438]],
+						"serial": "1308811990"
+
+				    }
+					
+
+				- Se houver erro
+					status: 400
+					message: ""
+
+	- O Payload de Retorno do GET:
+
+				status: 200
+				[{
+
+					"distancia_percorrida": 1234.1,
+					"tempo_em_movimento": 43211234, => ESTE TEMPO DEVE ESTAR EM SEGUNDOS! 
+					"tempo_parado": 987654321, => ESTE TEMPO DEVE ESTAR EM SEGUNDOS! 
+					"centroides_paradas":[[-19.985399, -43.948095],[-19.974550, -43.948438]],
+					"serial": "1308811990"
+
+				},
+				...
+				]
+
+DICAS 
+
+	- Para realização dos cálculos, utilize o PANDAS e os DATAFRAMES. Isso vai facilitar muito a sua vida. 
+	- Se ficar com dúvida, pesquise no Google. Com certeza você vai achar alguma referência para resolver o problema. 
+	- Lembre-se que estamos fazendo cálculos cartográficos. Ou seja, você vai precisar criar as funções dentro do contexto cartográfico ao invés de cartesiano. 
+	- Trata-se de um exercício para verificarmos a sua proficiência com as atividades mais básicas que executamos na empresa. O importante é você conseguir ir o mais longe possível e, durante a apresentação, explicar como você fez. Se você perceber que não vai conseguir acabar, pelo menos prepare um descritivo com a sua linha de raciocínio. 
+

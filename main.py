@@ -48,8 +48,8 @@ class CalculationHandler(RequestHandler):
 
             return_payload = {
                 'distancia_percorrida': float(tracking['distance'].sum()),
-                'tempo_em_movimento': 0 if (len(mov_time) == 0) else mov_time[len(mov_time) - 1] - mov_time[0]/1000,
-                'tempo_parado': 0 if (len(stop_time) == 0) else stop_time[len(stop_time) - 1] - stop_time[0]/1000,
+                'tempo_em_movimento': 0 if (len(mov_time) == 0) else mov_time[len(mov_time) - 1] - mov_time[0],
+                'tempo_parado': 0 if (len(stop_time) == 0) else stop_time[len(stop_time) - 1] - stop_time[0],
                 'centroides_paradas': kmeans.cluster_centers_.tolist(),
                 'serial': self.get_body_argument("serial")
             }
